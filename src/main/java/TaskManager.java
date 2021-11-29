@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class TaskManager {
 
     public static void main(String[] args) {
-        Options();
+        Menu();
 
 
     }
@@ -36,23 +36,52 @@ public class TaskManager {
 
     }
 
-    public static void Options(){
+    public static void Menu(){
         System.out.println(pl.coderslab.ConsoleColors.BLUE + "Please select an option");
         System.out.println(pl.coderslab.ConsoleColors.RESET + "a = add");
         System.out.println("r = remove");
         System.out.println("l = list");
         System.out.println("e = exit");
-        listOfStrings();
+        Input();
 
 
 
     }
-    public static void listOfStrings(){
+    public static void Input(){
         Scanner scanList = new Scanner(System.in);
-        String scanListString = scanList.nextLine();
-        if("l".equals(scanListString)){
-            ReadFile("src/main/Files/tasks.csv");
+        String input = scanList.nextLine();
+        switch(input){
+            case "l" :
+                ReadFile("src/main/Files/tasks.csv");
+                otherAction();
+                break;
+            case "a" :
+                System.out.println("a");
+                otherAction();
+                break;
+            case "r" :
+                System.out.println("remove");
+                otherAction();
+                break;
+            case "e" :
+                System.out.println("exit");
+                otherAction();
+                break;
         }
 
+
+
+    }
+    public static void otherAction(){
+        System.out.println("\n"+"\n"+"Wold you like to perform other actions? (y/n)" );
+        Scanner scanList = new Scanner(System.in);
+        String input = scanList.nextLine();
+        switch (input){
+            case "y" :
+                Menu();
+                break;
+            case "n" :
+                break;
+        }
     }
 }
