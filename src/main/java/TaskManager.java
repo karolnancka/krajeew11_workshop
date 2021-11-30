@@ -1,3 +1,5 @@
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +18,7 @@ public class TaskManager {
 
     }
 
-    public static String[][] ReadFile(String directory){
+    public static void ReadFile(String directory){
 
         Path path = Paths.get(directory);
         int i = 0;
@@ -25,7 +27,7 @@ public class TaskManager {
             try {
                 for (String s : Files.readAllLines(path)) {
 
-                    System.out.println(i + " : "+ s);
+                    System.out.println(i + " : " + s);
                     i++;
 
                 }
@@ -34,7 +36,6 @@ public class TaskManager {
                 System.out.println(e);
             }
         }
-        return null;
 
     }
 
@@ -62,7 +63,7 @@ public class TaskManager {
                 otherAction();
                 break;
             case "r" :
-                System.out.println("remove");
+                removeTask();
                 otherAction();
                 break;
             case "e" :
@@ -114,4 +115,53 @@ public class TaskManager {
         }
 
     }
+    public static void removeTask() {
+
+        System.out.println("Please provide number of line to be removed");
+
+        Scanner scan = new Scanner(System.in);
+        int numberOfLine = scan.nextInt();
+        Path path = Paths.get("src/main/Files/tasks.csv");
+
+        int i = 0;
+        int j = 0;
+        // counting numbers of records in file
+        try {
+            for (String s : Files.readAllLines(path)) {
+                i++;
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        String[] table = new String[i];
+
+        //input of records to new table
+        try {
+            for (String s : Files.readAllLines(path)) {
+                table[j] = s;
+                j++;
+
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+        String[] result = ArrayUtils.remove(table, numberOfLine);
+        List<String> outList = new ArrayList<>();
+
+        //replace of the old records with te new ones
+
+
+        try {
+            for (int k = 0; k < result.length; k++) {
+                outList.add(result[k]);
+                Files.write(path, outList);
+
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
 }
