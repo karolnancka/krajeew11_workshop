@@ -2,7 +2,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class TaskManager {
@@ -56,7 +59,7 @@ public class TaskManager {
                 otherAction();
                 break;
             case "a" :
-                System.out.println("a");
+                addTask();
                 otherAction();
                 break;
             case "r" :
@@ -83,5 +86,33 @@ public class TaskManager {
             case "n" :
                 break;
         }
+    }
+    public static void addTask(){
+        System.out.println("\n" + "Please add task description");
+        Scanner scan = new Scanner(System.in);
+        String inputDesc = scan.nextLine();
+
+
+        System.out.println("\n" + "Please add task due date");
+        Scanner scan2 = new Scanner(System.in);
+        String inputDueDate = scan.nextLine();
+
+        System.out.println("\n" + "Is Your task important (true/false)");
+        Scanner scan3 = new Scanner(System.in);
+        String inputImportant= scan.nextLine();
+
+        //save to file method
+
+        Path path = Paths.get("src/main/Files/tasks.csv");
+        List<String> outList = new ArrayList<>();
+        String newRecord = inputDesc + ", " + inputDueDate + ", " + inputImportant;
+
+        try {
+            Files.writeString(path, "\n", StandardOpenOption.APPEND);
+            Files.writeString(path, newRecord, StandardOpenOption.APPEND);
+        } catch (IOException ex) {
+            System.out.println("Can't sava a new record");
+        }
+
     }
 }
