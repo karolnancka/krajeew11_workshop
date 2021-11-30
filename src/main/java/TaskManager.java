@@ -19,16 +19,15 @@ public class TaskManager {
     public static String[][] ReadFile(String directory){
 
         Path path = Paths.get(directory);
-        String[][] fileTable = new String[3][3];
+        int i = 0;
+        //String[][] fileTable = new String[3][3];
         if(Files.exists(path)) {
             try {
                 for (String s : Files.readAllLines(path)) {
-                    int i = 0;
+
+                    System.out.println(i + " : "+ s);
                     i++;
-                    for(int j = 0; j < fileTable[i].length; j++){
-                        fileTable[i] = s.split(", ");
-                    }
-                    System.out.println(Arrays.toString(fileTable[i]));
+
                 }
 
             } catch (IOException e) {
