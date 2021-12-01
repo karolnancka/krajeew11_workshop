@@ -1,4 +1,5 @@
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,11 +29,16 @@ public class TaskManager {
         //String[][] fileTable = new String[3][3];
         if (Files.exists(path)) {
             try {
-                for (String s : Files.readAllLines(path)) {
+                if (numberOfLines() == 0) {
+                    System.out.println("No records to display");
 
-                    System.out.println(i + " : " + s);
-                    i++;
+                } else {
+                    for (String s : Files.readAllLines(path)) {
 
+                        System.out.println(i + " : " + s);
+                        i++;
+
+                    }
                 }
 
             } catch (IOException e) {
@@ -70,8 +76,6 @@ public class TaskManager {
                 otherAction();
                 break;
             case "e":
-                System.out.println("exit");
-                otherAction();
                 break;
         }
 
@@ -138,66 +142,80 @@ public class TaskManager {
     }
 
     public static void removeTask() throws FileNotFoundException {
+        if (numberOfLines() == 0) {
+            System.out.println("\n" + "No records in file");
 
-        System.out.println("Please provide number of line to be removed");
+        } else {
 
-        Scanner scan = new Scanner(System.in);
-        int numberOfLine = scan.nextInt();
+            System.out.println("Please provide number of line to be removed");
 
-        if (numberOfLines() == 1){
-            try (PrintWriter pw = new PrintWriter("src/main/Files/tasks.csv")) {
-                pw.close();
+            Scanner scan = new Scanner(System.in);
+            int numberOfLine;
+            String numberOfLineString = scan.nextLine();
+            if (!NumberUtils.isParsable(numberOfLineString)) {
+                System.out.println("Provide numeric value" + "\n");
+                removeTask();
+            } else {
+
+
+                numberOfLine = Integer.parseInt(numberOfLineString);
+
+
+                if (numberOfLines() == 1) {
+                    try (PrintWriter pw = new PrintWriter("src/main/Files/tasks.csv")) {
+                        pw.close();
+                    }
+                } else if (numberOfLine > -1 && numberOfLine < numberOfLines()) {
+                    Path path = Paths.get("src/main/Files/tasks.csv");
+
+                    int i = 0;
+                    int j = 0;
+                    // counting numbers of records in file
+                    try {
+                        for (String s : Files.readAllLines(path)) {
+                            i++;
+                        }
+                    } catch (IOException e) {
+                        System.out.println(e);
+                    }
+
+                    String[] table = new String[i];
+
+                    //input of records to new table
+                    try {
+                        for (String s : Files.readAllLines(path)) {
+                            table[j] = s;
+                            j++;
+
+                        }
+                    } catch (IOException e) {
+                        System.out.println(e);
+                    }
+
+                    String[] result = ArrayUtils.remove(table, numberOfLine);
+                    List<String> outList = new ArrayList<>();
+
+                    //replace of the old records with te new ones
+
+
+                    try {
+                        for (int k = 0; k < result.length; k++) {
+                            outList.add(result[k]);
+                            Files.write(path, outList);
+
+                        }
+                    } catch (IOException e) {
+                        System.out.println(e);
+                    }
+
+
+                } else {
+                    System.out.println("\n" + "Provided number out of database range- number of lines in current file: " + numberOfLines());
+
+                }
+
             }
         }
-
-        else if (numberOfLine > -1 && numberOfLine < numberOfLines()) {
-            Path path = Paths.get("src/main/Files/tasks.csv");
-
-            int i = 0;
-            int j = 0;
-            // counting numbers of records in file
-            try {
-                for (String s : Files.readAllLines(path)) {
-                    i++;
-                }
-            } catch (IOException e) {
-                System.out.println(e);
-            }
-
-            String[] table = new String[i];
-
-            //input of records to new table
-            try {
-                for (String s : Files.readAllLines(path)) {
-                    table[j] = s;
-                    j++;
-
-                }
-            } catch (IOException e) {
-                System.out.println(e);
-            }
-
-            String[] result = ArrayUtils.remove(table, numberOfLine);
-            List<String> outList = new ArrayList<>();
-
-            //replace of the old records with te new ones
-
-
-            try {
-                for (int k = 0; k < result.length; k++) {
-                    outList.add(result[k]);
-                    Files.write(path, outList);
-
-                }
-            } catch (IOException e) {
-                System.out.println(e);
-            }
-
-        }else{
-            System.out.println("\n" + "Provided number out of database range- number of lines in current file: " + numberOfLines());
-
-
-        }
-
     }
+
 }
