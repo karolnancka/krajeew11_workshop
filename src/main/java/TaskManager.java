@@ -1,6 +1,8 @@
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,18 +14,19 @@ import java.util.Scanner;
 
 public class TaskManager {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         Menu();
+        numberOfLines();
 
 
     }
 
-    public static void ReadFile(String directory){
+    public static void ReadFile(String directory) {
 
         Path path = Paths.get(directory);
         int i = 0;
         //String[][] fileTable = new String[3][3];
-        if(Files.exists(path)) {
+        if (Files.exists(path)) {
             try {
                 for (String s : Files.readAllLines(path)) {
 
@@ -39,7 +42,7 @@ public class TaskManager {
 
     }
 
-    public static void Menu(){
+    public static void Menu() throws FileNotFoundException {
         System.out.println(pl.coderslab.ConsoleColors.BLUE + "Please select an option");
         System.out.println(pl.coderslab.ConsoleColors.RESET + "a = add");
         System.out.println("r = remove");
@@ -48,46 +51,47 @@ public class TaskManager {
         Input();
 
 
-
     }
-    public static void Input(){
+
+    public static void Input() throws FileNotFoundException {
         Scanner scanList = new Scanner(System.in);
         String input = scanList.nextLine();
-        switch(input){
-            case "l" :
+        switch (input) {
+            case "l":
                 ReadFile("src/main/Files/tasks.csv");
                 otherAction();
                 break;
-            case "a" :
+            case "a":
                 addTask();
                 otherAction();
                 break;
-            case "r" :
+            case "r":
                 removeTask();
                 otherAction();
                 break;
-            case "e" :
+            case "e":
                 System.out.println("exit");
                 otherAction();
                 break;
         }
 
 
-
     }
-    public static void otherAction(){
-        System.out.println("\n"+"\n"+"Wold you like to perform other actions? (y/n)" );
+
+    public static void otherAction() throws FileNotFoundException {
+        System.out.println("\n" + "\n" + "Wold you like to perform other actions? (y/n)");
         Scanner scanList = new Scanner(System.in);
         String input = scanList.nextLine();
-        switch (input){
-            case "y" :
+        switch (input) {
+            case "y":
                 Menu();
                 break;
-            case "n" :
+            case "n":
                 break;
         }
     }
-    public static void addTask(){
+
+    public static void addTask() {
         System.out.println("\n" + "Please add task description");
         Scanner scan = new Scanner(System.in);
         String inputDesc = scan.nextLine();
@@ -99,7 +103,7 @@ public class TaskManager {
 
         System.out.println("\n" + "Is Your task important (true/false)");
         Scanner scan3 = new Scanner(System.in);
-        String inputImportant= scan.nextLine();
+        String inputImportant = scan.nextLine();
 
         //save to file method
 
@@ -115,16 +119,10 @@ public class TaskManager {
         }
 
     }
-    public static void removeTask() {
 
-        System.out.println("Please provide number of line to be removed");
-
-        Scanner scan = new Scanner(System.in);
-        int numberOfLine = scan.nextInt();
-        Path path = Paths.get("src/main/Files/tasks.csv");
-
+    public static int numberOfLines() {
         int i = 0;
-        int j = 0;
+        Path path = Paths.get("src/main/Files/tasks.csv");
         // counting numbers of records in file
         try {
             for (String s : Files.readAllLines(path)) {
@@ -134,34 +132,72 @@ public class TaskManager {
             System.out.println(e);
         }
 
-        String[] table = new String[i];
-
-        //input of records to new table
-        try {
-            for (String s : Files.readAllLines(path)) {
-                table[j] = s;
-                j++;
-
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-
-        String[] result = ArrayUtils.remove(table, numberOfLine);
-        List<String> outList = new ArrayList<>();
-
-        //replace of the old records with te new ones
+        return i;
 
 
-        try {
-            for (int k = 0; k < result.length; k++) {
-                outList.add(result[k]);
-                Files.write(path, outList);
-
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
     }
 
+    public static void removeTask() throws FileNotFoundException {
+
+        System.out.println("Please provide number of line to be removed");
+
+        Scanner scan = new Scanner(System.in);
+        int numberOfLine = scan.nextInt();
+
+        if (numberOfLines() == 1){
+            try (PrintWriter pw = new PrintWriter("src/main/Files/tasks.csv")) {
+                pw.close();
+            }
+        }
+
+        else if (numberOfLine > -1 && numberOfLine < numberOfLines()) {
+            Path path = Paths.get("src/main/Files/tasks.csv");
+
+            int i = 0;
+            int j = 0;
+            // counting numbers of records in file
+            try {
+                for (String s : Files.readAllLines(path)) {
+                    i++;
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+
+            String[] table = new String[i];
+
+            //input of records to new table
+            try {
+                for (String s : Files.readAllLines(path)) {
+                    table[j] = s;
+                    j++;
+
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+
+            String[] result = ArrayUtils.remove(table, numberOfLine);
+            List<String> outList = new ArrayList<>();
+
+            //replace of the old records with te new ones
+
+
+            try {
+                for (int k = 0; k < result.length; k++) {
+                    outList.add(result[k]);
+                    Files.write(path, outList);
+
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+
+        }else{
+            System.out.println("\n" + "Provided number out of database range- number of lines in current file: " + numberOfLines());
+
+
+        }
+
+    }
 }
