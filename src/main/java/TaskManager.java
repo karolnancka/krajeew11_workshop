@@ -1,5 +1,6 @@
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import pl.coderslab.ConsoleColors;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -76,6 +77,7 @@ public class TaskManager {
                 otherAction();
                 break;
             case "e":
+                System.out.println(ConsoleColors.RED + "Bye, Bye.");
                 break;
         }
 
@@ -91,6 +93,7 @@ public class TaskManager {
                 Menu();
                 break;
             case "n":
+                System.out.println(ConsoleColors.RED + "Bye, Bye.");
                 break;
         }
     }
